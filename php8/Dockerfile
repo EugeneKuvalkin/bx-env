@@ -33,6 +33,8 @@ RUN apt-get update \
     && docker-php-ext-enable apcu \
     && pecl install memcached \
     && docker-php-ext-enable memcached \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install mysqli pdo_mysql opcache exif intl sockets bz2 zip \
