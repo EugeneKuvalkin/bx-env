@@ -33,14 +33,22 @@ RUN apt-get update \
     && docker-php-ext-enable apcu \
     && pecl install memcached \
     && docker-php-ext-enable memcached \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
+    && pecl install igbinary \
+    && docker-php-ext-enable igbinary \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install mysqli pdo_mysql opcache exif intl sockets bz2 zip \
     && docker-php-ext-configure opcache --enable-opcache \
     && rm -rf /tmp/* /var/cache/apk/* /var/lib/apt/lists/* \
     && pecl install xdebug && docker-php-ext-enable xdebug
+
+# install redis extension with igbinary support
+RUN (echo "yes"; echo "no"; echo "no";) | pecl install redis-5.3.7 \
+    && docker-php-ext-enable redis \
+    # check if redis is installed
+    && php -m | grep 'redis' \
+    # check if redis is compiled with igbinary support
+    && php -r 'echo Redis::SERIALIZER_IGBINARY;'
 
 RUN cd /tmp && \
     git clone https://github.com/Imagick/imagick && \

@@ -30,20 +30,26 @@ RUN apt-get update \
         libpng-dev \
         libxml2-dev \
         --no-install-recommends \
-    && pecl install imagick apcu-${APCU_VERSION} memcached redis \
+    && pecl install imagick apcu-${APCU_VERSION} memcached igbinary \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable memcached \
-    && docker-php-ext-enable redis \
+    && docker-php-ext-enable igbinary \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install mysqli pdo_mysql opcache exif intl sockets bz2 zip \
     && docker-php-ext-configure opcache --enable-opcache \
-#    && pecl install -o -f redis \
-#    && docker-php-ext-enable redis \
     && rm -rf /tmp/* /var/cache/apk/* /var/lib/apt/lists/* \
     && pecl install xdebug && docker-php-ext-enable xdebug \
     && pecl install memcache-${MEMCACHE_VERSION} && docker-php-ext-enable memcache
+
+# install redis extension with igbinary support
+RUN (echo "yes"; echo "no"; echo "no";) | pecl install redis-5.3.7 \
+    && docker-php-ext-enable redis \
+    # check if redis is installed
+    && php -m | grep 'redis' \
+    # check if redis is compiled with igbinary support
+    && php -r 'echo Redis::SERIALIZER_IGBINARY;'
 
 RUN groupadd -g ${CONTAINER_GID} ${CONTAINER_GROUP} \
     && useradd -u ${CONTAINER_UID} -g ${CONTAINER_GID} ${CONTAINER_USER}
