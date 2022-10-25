@@ -1,3 +1,9 @@
+FROM composer AS composer
+
+COPY ./composer.json /app/composer.json
+
+RUN composer install --dev
+
 FROM php:7.4-fpm
 
 ARG APCU_VERSION=5.1.20
@@ -56,12 +62,14 @@ RUN groupadd -g ${CONTAINER_GID} ${CONTAINER_GROUP} \
 
 RUN chmod -R 777 /usr/local/etc/php/ \
     && chown -R ${CONTAINER_USER} /usr/local/etc/php/ \
-    && curl -sS https://getcomposer.org/installer | php ; mv composer.phar /usr/bin/composer \
     && update-exim4.conf -v
 
 RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a xdebug.client_port="${BX_XDEBUG_PORT} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a default_charset="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/php.ini \
     && sed -i "$ a mbstring.internal_encoding="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/mbstring.ini
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer /app /app
 
 ENTRYPOINT php-fpm -F
