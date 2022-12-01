@@ -35,6 +35,9 @@ RUN apt-get update \
         zlib1g-dev \
         libpng-dev \
         libxml2-dev \
+        librabbitmq-dev \
+        libreoffice \
+        ffmpeg \
         --no-install-recommends \
     && pecl install imagick apcu-${APCU_VERSION} memcached igbinary \
     && docker-php-ext-enable imagick \
@@ -47,7 +50,9 @@ RUN apt-get update \
     && docker-php-ext-configure opcache --enable-opcache \
     && rm -rf /tmp/* /var/cache/apk/* /var/lib/apt/lists/* \
     && pecl install xdebug && docker-php-ext-enable xdebug \
-    && pecl install memcache-${MEMCACHE_VERSION} && docker-php-ext-enable memcache
+    && pecl install memcache-${MEMCACHE_VERSION} && docker-php-ext-enable memcache \
+    && pecl install amqp && docker-php-ext-enable amqp \
+    && docker-php-ext-configure pcntl --enable-pcntl && docker-php-ext-install pcntl
 
 # install redis extension with igbinary support
 RUN (echo "yes"; echo "no"; echo "no";) | pecl install redis-5.3.7 \

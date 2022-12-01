@@ -3,6 +3,17 @@ version: '3.8'
 
 services:
 
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: bx-rabbitmq
+    restart: always
+    ports:
+      - ${BX_RABBITMQ_MANAGEMENT_PORT}:15672
+    networks:
+      bx:
+        aliases:
+          - rabbitmq
+
   memcache:
     image: memcached:alpine
     container_name: bx-memcache
