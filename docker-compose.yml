@@ -82,6 +82,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${BX_MYSQL_ROOT_PASSWORD}
       - BX_MYSQL_IMAGE=${BX_MYSQL_IMAGE}
+      - TZ=${BX_SERVER_TIMEZONE}
     ports:
       - ${BX_MYSQL_PORT}:3306
     volumes:
@@ -110,6 +111,7 @@ services:
       - CONTAINER_GID=${BX_CONTAINER_GID}
       - CONTAINER_USER=bx
       - CONTAINER_GROUP=bx
+      - BX_SERVER_TIMEZONE=${BX_SERVER_TIMEZONE}
     volumes:
       - ${BX_LOGS_PATH}/php-fpm:/var/log/php-fpm
       - bx-public:/var/www/public_html
