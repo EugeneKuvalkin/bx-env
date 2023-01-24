@@ -78,8 +78,7 @@ RUN groupadd -g ${CONTAINER_GID} ${CONTAINER_GROUP} && \
     useradd -u ${CONTAINER_UID} -g ${CONTAINER_GID} ${CONTAINER_USER}
 
 RUN chmod -R 777 /usr/local/etc/php/ \
-    && chown -R ${CONTAINER_USER} /usr/local/etc/php/ \
-    && update-exim4.conf -v
+    && chown -R ${CONTAINER_USER} /usr/local/etc/php/
 
 RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a xdebug.client_port="${BX_XDEBUG_PORT} /usr/local/etc/php/conf.d/xdebug.ini \
