@@ -13,6 +13,8 @@ services:
       bx:
         aliases:
           - rabbitmq
+    profiles:
+      - transformer
 
   memcache:
     image: memcached:alpine
@@ -54,6 +56,8 @@ services:
       bx:
         aliases:
           - ${BX_PUSH_SUB_HOST}
+    profiles:
+      - with-push
 
   push-server-pub:
     image: ikarpovich/bitrix-push-server
@@ -71,6 +75,8 @@ services:
       bx:
         aliases:
           - ${BX_PUSH_PUB_HOST}
+    profiles:
+      - with-push
 
   mysql:
     build:
@@ -169,6 +175,8 @@ services:
       bx:
         aliases:
           - node
+    profiles:
+      - with-node
 
   fakesmtp:
     image: gessnerfl/fake-smtp-server
@@ -182,6 +190,8 @@ services:
       - ${BX_SMTP_WEB_PORT}:5080
       - ${BX_SMTP_REST_PORT}:5081
       - ${BX_SMTP_PORT}:5025
+    profiles:
+      - with-fakesmtp
 
 networks:
   bx:
