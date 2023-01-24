@@ -100,6 +100,7 @@ services:
           - mysql
 
   php-fpm:
+    image: bx-env-php-fpm:${BX_PHP_VERSION}
     build:
       context: ./php${BX_PHP_VERSION}
       args:
