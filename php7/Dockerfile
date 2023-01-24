@@ -18,12 +18,15 @@ ARG BX_XDEBUG_IP
 ARG BX_XDEBUG_PORT
 ARG BX_DEFAULT_CHARSET
 
+ARG BX_SMTP_PORT
+ARG BX_SMTP_FROM
+
 COPY ./conf.d /usr/local/etc/php/conf.d/
 COPY ./php-fpm.d /usr/local/etc/php-fpm.d/
-COPY ./exim/update-exim4.conf.conf /etc/exim4/
+COPY ./msmtp /usr/local/etc/msmtp/
 
 RUN apt-get update \
-    && apt-get install -y vim exim4 \
+    && apt-get install -y vim msmtp \
     && echo "syntax on" > ~/.vimrc \
     && apt-get -y install \
         libmagickwand-dev \
@@ -73,7 +76,9 @@ RUN chmod -R 777 /usr/local/etc/php/ \
 RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a xdebug.client_port="${BX_XDEBUG_PORT} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a default_charset="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/php.ini \
-    && sed -i "$ a mbstring.internal_encoding="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/mbstring.ini
+    && sed -i "$ a mbstring.internal_encoding="${BX_DEFAULT_CHARSET} /usr/local/etc/php/conf.d/mbstring.ini \
+    && sed -i "$ a port "${BX_SMTP_PORT} /usr/local/etc/msmtp/msmtp.conf \
+    && sed -i "$ a from "${BX_SMTP_FROM} /usr/local/etc/msmtp/msmtp.conf
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY --from=composer /app /app
