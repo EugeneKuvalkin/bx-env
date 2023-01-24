@@ -37,6 +37,7 @@ RUN apt-get update \
         librabbitmq-dev \
         libreoffice \
         ffmpeg \
+        procps \
         --no-install-recommends \
     && pecl install apcu-${APCU_VERSION} \
     && docker-php-ext-enable apcu \

@@ -38,6 +38,7 @@ RUN apt-get update \
         librabbitmq-dev \
         libreoffice \
         ffmpeg \
+        procps \
         --no-install-recommends \
     && pecl install imagick apcu-${APCU_VERSION} memcached igbinary \
     && docker-php-ext-enable imagick \
