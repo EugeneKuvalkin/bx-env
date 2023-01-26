@@ -39,6 +39,8 @@ RUN apt-get update \
         libxml2-dev \
         librabbitmq-dev \
         libreoffice \
+        libreoffice-java-common \
+        default-jre \
         ffmpeg \
         procps \
         --no-install-recommends \
