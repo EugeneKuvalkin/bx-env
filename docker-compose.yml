@@ -180,7 +180,7 @@ services:
       - with-node
 
   fakesmtp:
-    image: gessnerfl/fake-smtp-server
+    image: rnwood/smtp4dev:v3.1
     container_name: bx-fakesmtp
     restart: always
     networks:
@@ -188,11 +188,11 @@ services:
         aliases:
           - fakesmtp
     ports:
-      - ${BX_SMTP_WEB_PORT}:5080
+      - ${BX_SMTP_WEB_PORT}:80
       - ${BX_SMTP_REST_PORT}:5081
-      - ${BX_SMTP_PORT}:5025
-    profiles:
-      - with-fakesmtp
+      - ${BX_SMTP_PORT}:${BX_SMTP_PORT}
+    environment:
+      - ServerOptions__Port=${BX_SMTP_PORT}
 
 networks:
   bx:
