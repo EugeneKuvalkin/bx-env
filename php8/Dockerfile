@@ -20,10 +20,6 @@ ARG BX_DEFAULT_CHARSET
 ARG BX_SMTP_PORT
 ARG BX_SMTP_FROM
 
-COPY ./conf.d /usr/local/etc/php/conf.d/
-COPY ./php-fpm.d /usr/local/etc/php-fpm.d/
-COPY ./msmtp /usr/local/etc/msmtp/
-
 RUN apt-get update \
     && apt-get install -y vim zip unzip default-mysql-client git msmtp \
     && echo "syntax on" > ~/.vimrc \
@@ -31,18 +27,20 @@ RUN apt-get update \
         libmagickwand-dev \
         libjpeg62-turbo-dev \
         libfreetype6-dev \
+        memcached \
         libmemcached-dev \
         libicu-dev \
         libzip-dev \
         zlib1g-dev \
         libpng-dev \
         libxml2-dev \
-        librabbitmq-dev \
-        libreoffice \
-        libreoffice-java-common \
-        default-jre \
-        ffmpeg \
-        procps \
+        libpq-dev \
+     	librabbitmq-dev \
+		libreoffice \
+		libreoffice-java-common \
+		default-jre \
+		ffmpeg \
+		procps \
         --no-install-recommends \
     && pecl install apcu-${APCU_VERSION} \
     && docker-php-ext-enable apcu \
@@ -52,7 +50,7 @@ RUN apt-get update \
     && docker-php-ext-enable igbinary \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli pdo_mysql opcache exif intl sockets bz2 zip \
+    && docker-php-ext-install pgsql pdo_pgsql mysqli pdo_mysql opcache exif intl sockets bz2 zip \
     && docker-php-ext-configure opcache --enable-opcache \
     && rm -rf /tmp/* /var/cache/apk/* /var/lib/apt/lists/* \
     && pecl install xdebug && docker-php-ext-enable xdebug \
@@ -81,6 +79,10 @@ RUN groupadd -g ${CONTAINER_GID} ${CONTAINER_GROUP} && \
 
 RUN chmod -R 777 /usr/local/etc/php/ \
     && chown -R ${CONTAINER_USER} /usr/local/etc/php/
+
+COPY ./conf.d /usr/local/etc/php/conf.d/
+COPY ./php-fpm.d /usr/local/etc/php-fpm.d/
+COPY ./msmtp /usr/local/etc/msmtp/
 
 RUN sed -i "$ a xdebug.client_host="${BX_XDEBUG_IP} /usr/local/etc/php/conf.d/xdebug.ini \
     && sed -i "$ a xdebug.client_port="${BX_XDEBUG_PORT} /usr/local/etc/php/conf.d/xdebug.ini \
