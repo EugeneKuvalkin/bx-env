@@ -149,6 +149,7 @@ services:
       - CONTAINER_GID=${BX_CONTAINER_GID}
       - CONTAINER_USER=bx
       - CONTAINER_GROUP=bx
+      - TZ=${BX_SERVER_TIMEZONE}
     volumes:
       - ${BX_LOGS_PATH}/nginx:/var/log/nginx
       - bx-public:/var/www/public_html
